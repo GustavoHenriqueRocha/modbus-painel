@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{titulo}}</title>
+<style>
+:root { --fundo:#0b1020; --cartao:#151c33; --borda:#243150; --texto:#e8edf7; --suave:#7f93b8; --ok:#39d98a; --alerta:#e3b341; --off:#6b2b36; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--fundo); color:var(--texto); font-family:system-ui, "Segoe UI", sans-serif; padding:24px 16px; }
+h1 { font-size:20px; font-weight:600; text-align:center; color:#9fb4d8; }
+#estado { text-align:center; color:var(--suave); font-size:13px; margin:4px 0 22px; }
+#estado.erro { color:var(--alerta); }
+h2 { font-size:14px; font-weight:600; color:var(--suave); text-transform:uppercase; letter-spacing:.06em; margin:18px auto 10px; max-width:960px; }
+.grade { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px; max-width:960px; margin:0 auto; }
+.cartao { background:var(--cartao); border:1px solid var(--borda); border-radius:14px; padding:14px 10px; text-align:center; }
+.nome { color:var(--suave); font-size:13px; margin-bottom:6px; }
+.valor { font-size:36px; font-weight:700; line-height:1; color:var(--ok); font-variant-numeric:tabular-nums; }
+.valor small { font-size:15px; color:var(--suave); font-weight:500; }
+.ajuste { color:var(--suave); font-size:12px; margin-top:8px; }
+.alerta .valor { color:var(--alerta); }
+.sem .valor { color:var(--off); }
+</style>
+</head>
+<body>
+<h1>{{titulo}}</h1>
+<div id="estado">carregando…</div>
+<div id="grupos"></div>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function cartao(v) {
+  const tem = v.valor !== null;
+  const cls = !tem ? "sem" : (v.antigo || v.fora ? "alerta" : "");
+  const ajuste = v.ajuste !== null ? `ajuste: ${esc(v.ajuste)} ${esc(v.unidade)}` : "";
+  return `<div class="cartao ${cls}">
+    <div class="nome">${esc(v.nome)}${v.antigo ? " · último valor bom" : ""}</div>
+    <div class="valor">${tem ? esc(v.valor) : "—"}<small> ${tem ? esc(v.unidade) : ""}</small></div>
+    <div class="ajuste">${ajuste}</div></div>`;
+}
+async function atualizar() {
+  const estado = document.getElementById("estado");
+  try {
+    const d = await (await fetch("/dados")).json();
+    document.getElementById("grupos").innerHTML = Object.entries(d.grupos).map(([g, vs]) =>
+      `<h2>${esc(g)}</h2><div class="grade">${vs.map(cartao).join("")}</div>`).join("");
+    estado.className = d.erro ? "erro" : "";
+    estado.textContent = d.erro ? `atenção: ${d.erro}` : `atualizado às ${d.atualizado}`;
+  } catch (e) {
+    estado.className = "erro";
+    estado.textContent = "sem conexão com o leitor";
+  }
+}
+atualizar();
+setInterval(atualizar, {{intervalo}});
+</script>
+</body>
+</html>

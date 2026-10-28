@@ -1,0 +1,29 @@
+# Painel de uma extrusora. Os endereços batem com o simulador:
+#   python -m modbus_painel simular            (num terminal)
+#   python -m modbus_painel painel exemplos/extrusora.toml
+titulo = "Extrusora — ao vivo"
+
+[aparelho]
+host = "127.0.0.1"
+porta = 5020
+unit = 1
+intervalo = 2
+
+[[grupo]]
+nome = "Temperatura das zonas"
+valor = [
+  { nome = "Zona 1", registrador = 100, ajuste = 110, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+  { nome = "Zona 2", registrador = 101, ajuste = 111, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+  { nome = "Zona 3", registrador = 102, ajuste = 112, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+  { nome = "Zona 4", registrador = 103, ajuste = 113, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+  { nome = "Zona 5", registrador = 104, ajuste = 114, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+  { nome = "Zona 6", registrador = 105, ajuste = 115, unidade = "°C", minimo = 0, maximo = 400, tolerancia = 8 },
+]
+
+[[grupo]]
+nome = "Rosca e massa"
+valor = [
+  { nome = "Rotação", registrador = 120, unidade = "rpm" },
+  { nome = "Corrente", registrador = 121, unidade = "A", escala = 10 },
+  { nome = "Pressão da massa", registrador = 122, unidade = "bar", maximo = 600 },
+]

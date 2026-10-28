@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modbus-painel"
+version = "0.1.0"
+description = "Cliente Modbus TCP em Python puro, painel web ao vivo configurado por TOML e simulador para testes"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Gustavo Henrique Rocha" }]
+keywords = ["modbus", "plc", "clp", "scada", "dashboard", "industrial"]
+
+[project.scripts]
+modbus-painel = "modbus_painel.__main__:main"
+
+[tool.setuptools]
+packages = ["modbus_painel"]
+
+[tool.setuptools.package-data]
+modbus_painel = ["pagina.html"]
